@@ -1,15 +1,17 @@
 package com.intuit.web;
 
 import com.intuit.model.Citizen;
+import com.intuit.model.Contender;
 import com.intuit.model.Idea;
 import com.intuit.model.IdeaRating;
-import com.intuit.service.CitizenService;
-import com.intuit.service.ContenderService;
 import com.intuit.service.ElectionService;
 import com.intuit.service.IdeaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
 
@@ -32,19 +34,16 @@ public class VotingController {
     }
 
     @PostMapping("produces = application/json")
-    public ResponseEntity<IdeaRating> addVote(Citizen citizen, Idea idea, Integer rating){
+    public ResponseEntity<IdeaRating> addVote(Citizen citizen, Idea idea, Integer rating) {
         IdeaRating ideaRating = electionService.acceptRating(citizen, idea, rating);
-        if(ideaRating == null){
+        if (ideaRating == null) {
             return new ResponseEntity<>(ideaRating, OK);
         }
         return new ResponseEntity<>(ideaRating, UNPROCESSABLE_ENTITY);
     }
 
-    @PutMapping("produces = application/json")
-    public void editVote(Citizen citizen, Idea idea, Integer rating){
-        electionService.acceptRating(citizen, idea, rating);
+    @GetMapping("produces = application/json")
+    public Contender runElection() {
+        return electionService.runElection();
     }
-
-
-
 }

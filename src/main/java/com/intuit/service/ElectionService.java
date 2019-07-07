@@ -37,9 +37,6 @@ public class ElectionService {
             return null;
         }
         IdeaRating ideaRating = ideaRatingService.addRating(citizen, idea, rating);
-        if (ideaRating == null) {
-            return null;
-        }
         checkContenderStatus(ideaRating, idea.getContender());
         contenderService.checkAndAddFollower(ideaRating);
         return ideaRating;
@@ -48,6 +45,7 @@ public class ElectionService {
     /*
     I assume there is only 1 winner. Getting a collection of winners is also possible, but
     will be more complex. I leave this scenarion out for now.
+    I could also have made better use of lambdas, but chose simplest solution
      */
     public Contender runElection() {
         Map<Contender, Double> scoresForContenders = new HashMap<>();
