@@ -11,12 +11,15 @@ import java.util.Set;
 public class IdeaService {
     private Set<Idea> ideas = new HashSet<>();
 
-    public void addIdea(Contender contender, String details){
-        Idea idea = new Idea(contender, details);
+    public void addIdea(Idea idea){
         ideas.add(idea);
     }
 
-    boolean isExist(Idea idea){
+    public boolean isExist(Idea idea){
         return ideas.contains(idea);
+    }
+
+    public Set<Idea> getAllIdeas(){
+        return ideas;
     }
 }

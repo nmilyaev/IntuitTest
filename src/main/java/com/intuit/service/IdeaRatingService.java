@@ -18,15 +18,21 @@ public class IdeaRatingService {
         return ideaRatings.stream().filter(ir -> ir.getIdea().equals(idea)).collect(Collectors.toSet());
     }
 
-    public int getAverageRating(Idea idea) {
-        return ideaRatings.stream().filter(ir -> ir.getIdea().equals(idea))
+    public double getAverageRating(Idea idea) {
+        long count = ideaRatings.stream().filter(ir -> ir.getIdea().equals(idea)).count();
+        int sumRating = ideaRatings.stream().filter(ir -> ir.getIdea().equals(idea))
                 .filter(Objects::nonNull)
                 .mapToInt(IdeaRating::getRating).sum();
+        return (double) sumRating / count;
     }
 
-    IdeaRating add(Citizen citizen, Idea idea, Integer rating) {
+    public IdeaRating addRating(Citizen citizen, Idea idea, Integer rating) {
         IdeaRating ideaRating = new IdeaRating(idea, citizen, rating);
         boolean result = ideaRatings.add(ideaRating);
-        return result ? ideaRating : null;
+        if (!result) {
+            ideaRatings.remove(ideaRating);
+            ideaRatings.add(ideaRating);
+        }
+        return ideaRating;
     }
 }

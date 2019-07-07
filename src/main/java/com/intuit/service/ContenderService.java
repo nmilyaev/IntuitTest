@@ -8,25 +8,31 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class ContenderService {
     private Set<Contender> contenders = new HashSet<>();
 
-    void checkAndAddFollower(IdeaRating rating) {
-        if (rating.getRating() > 5) {
+    public Citizen checkAndAddFollower(IdeaRating rating) {
+        if (rating.getRating() >= 5) {
             Contender contender = rating.getIdea().getContender();
             contender.getFollowers().add(rating.getCitizen());
+            return rating.getCitizen();
         }
+        return null;
     }
 
-    public void addAsAContender(Citizen citizen){
+    public Set<Idea> getIdeasForContender(Contender contender) {
+        return contender.getIdeas();
+    }
+
+    public void addIdeasToContender(Contender contender, Idea... ideas) {
+        contender.addIdeas(ideas);
+    }
+
+    public Contender addAsAContender(Citizen citizen) {
         Contender contender = new Contender(citizen);
         contenders.add(contender);
-    }
-
-    public Set<Idea> getAllIdeas(){
-        return contenders.stream().flatMap(c->c.getIdeas().stream()).collect(Collectors.toSet());
+        return contender;
     }
 }

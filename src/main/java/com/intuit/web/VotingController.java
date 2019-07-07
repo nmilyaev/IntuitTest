@@ -6,6 +6,7 @@ import com.intuit.model.IdeaRating;
 import com.intuit.service.CitizenService;
 import com.intuit.service.ContenderService;
 import com.intuit.service.ElectionService;
+import com.intuit.service.IdeaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,15 +19,16 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 @RestController
 @RequestMapping("election")
 public class VotingController {
-    @Autowired
-    private ContenderService contenderService;
 
     @Autowired
     private ElectionService electionService;
 
+    @Autowired
+    private IdeaService ideaService;
+
     @GetMapping("produces = application/json")
     public Set<Idea> getAllIdeas() {
-        return contenderService.getAllIdeas();
+        return ideaService.getAllIdeas();
     }
 
     @PostMapping("produces = application/json")

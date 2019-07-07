@@ -4,13 +4,17 @@ import com.intuit.model.Citizen;
 import com.intuit.model.Contender;
 import com.intuit.model.Idea;
 import com.intuit.model.IdeaRating;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Service
+@Getter
 public class ElectionService {
     private Set<Contender> eligibleContenders = new HashSet<>();
 
@@ -29,16 +33,41 @@ public class ElectionService {
     //Create/update rating
     public IdeaRating acceptRating(Citizen citizen, Idea idea, Integer rating) {
         // Check that citizen & idea exist
-        if (!citizenService.isExist(citizen) || !ideaService.isExist(idea)){
+        if (!citizenService.isExist(citizen) || !ideaService.isExist(idea)) {
             return null;
         }
-        IdeaRating ideaRating = ideaRatingService.add(citizen, idea, rating);
+        IdeaRating ideaRating = ideaRatingService.addRating(citizen, idea, rating);
         if (ideaRating == null) {
             return null;
         }
         checkContenderStatus(ideaRating, idea.getContender());
         contenderService.checkAndAddFollower(ideaRating);
         return ideaRating;
+    }
+
+    /*
+    I assume there is only 1 winner. Getting a collection of winners is also possible, but
+    will be more complex. I leave this scenarion out for now.
+     */
+    public Contender runElection() {
+        Map<Contender, Double> scoresForContenders = new HashMap<>();
+        for (Contender contender : eligibleContenders) {
+            Set<Idea> ideasOfContender = contender.getIdeas();
+            double score = 0;
+            for (Idea idea : ideasOfContender) {
+                score += ideaRatingService.getAverageRating(idea);
+            }
+            scoresForContenders.put(contender, score);
+        }
+        double max = 0;
+        Contender winner = null;
+        for (Map.Entry<Contender, Double> entry : scoresForContenders.entrySet()) {
+            if (entry.getValue() > max) {
+                max = entry.getValue();
+                winner = entry.getKey();
+            }
+        }
+        return winner;
     }
 
     /*

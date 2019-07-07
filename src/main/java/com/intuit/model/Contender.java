@@ -3,6 +3,7 @@ package com.intuit.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,5 +16,9 @@ public class Contender {
 
     public Contender(Citizen citizen) {
         this.setCitizen(citizen);
+    }
+
+    public void addIdeas(Idea ... newIdeas) {
+        ideas.addAll(Arrays.asList(newIdeas));
     }
 }
